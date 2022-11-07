@@ -39,13 +39,13 @@ func checkEcoindex(cCtx *cli.Context) error {
 	errEcoindex := getEcoindexHealth(ecoindexUrl)
 
 	if errEcoindex != nil && !isLockFileExist() {
-		message := fmt.Sprintf("🚨 __ecoindex API error__ \\nThe Ecoindex API %s is in error. Here is the detail: \\n```%s```", name, errEcoindex.Error())
+		message := fmt.Sprintf("🚨 **ecoindex API error** \n\nThe Ecoindex API %s is in error. Here is the detail: \n```%s```", name, errEcoindex.Error())
 		createLockFile()
 		sendMessage(message, mattermostUrl)
 	}
 
 	if errEcoindex == nil && isLockFileExist() {
-		message := fmt.Sprintf("✅ __ecoindex API OK__ \\nThe Ecoindex API %s is now OK.", name)
+		message := fmt.Sprintf("✅ **ecoindex API OK** \n\nThe Ecoindex API %s is now OK.", name)
 		removeLockFile()
 		sendMessage(message, mattermostUrl)
 	}
