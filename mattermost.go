@@ -3,14 +3,11 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
-func sendMessage(message string, url string, name string) error {
-	text := fmt.Sprintf("The Ecoindex API %s is in error. Here is the detail: \\n```%s```", name, message)
-
-	values := map[string]string{"text": text}
+func sendMessage(message string, url string) error {
+	values := map[string]string{"text": message}
 	json_data, err := json.Marshal(values)
 	if err != nil {
 		return err

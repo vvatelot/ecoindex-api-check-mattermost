@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/urfave/cli/v2"
 )
 
@@ -29,15 +31,23 @@ func getCliApp() *cli.App {
 }
 
 func checkEcoindex(cCtx *cli.Context) error {
-	url := cCtx.String("ecoindex_url")
+	ecoindexUrl := cCtx.String("ecoindex_url")
 	mattermostUrl := cCtx.String("mattermost_url")
 	name := cCtx.String("name")
 
-	if err := isEcoindexHealthy(url); err != nil {
-		if err := sendMessage(err.Error(), mattermostUrl, name); err != nil {
-			return err
-		}
+	setLockFileName(name, ecoindexUrl)
+	errEcoindex := getEcoindexHealth(ecoindexUrl)
 
+	if errEcoindex != nil && !isLockFileExist() {
+		message := fmt.Sprintf("🚨 __ecoindex API error__ \\nThe Ecoindex API %s is in error. Here is the detail: \\n```%s```", name, errEcoindex.Error())
+		createLockFile()
+		sendMessage(message, mattermostUrl)
+	}
+
+	if errEcoindex == nil && isLockFileExist() {
+		message := fmt.Sprintf("✅ __ecoindex API OK__ \\nThe Ecoindex API %s is now OK.", name)
+		removeLockFile()
+		sendMessage(message, mattermostUrl)
 	}
 
 	return nil

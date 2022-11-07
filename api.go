@@ -12,7 +12,7 @@ type HealthResponse struct {
 	Chromedriver bool `json:"chromedriver"`
 }
 
-func isEcoindexHealthy(url string) error {
+func getEcoindexHealth(url string) error {
 	var healthResponse HealthResponse
 
 	res, err := http.Get(url + "/health")
